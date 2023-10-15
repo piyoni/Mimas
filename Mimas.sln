@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Mimas", "Mimas\Mimas.fsproj", "{D8154777-D7ED-48A6-8673-73B360447064}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8154777-D7ED-48A6-8673-73B360447064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8154777-D7ED-48A6-8673-73B360447064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8154777-D7ED-48A6-8673-73B360447064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8154777-D7ED-48A6-8673-73B360447064}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CB2B865-9512-46D8-9B51-72E2E578B8DA}
+	EndGlobalSection
+EndGlobal
