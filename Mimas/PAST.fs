@@ -7,7 +7,6 @@ open MetaInf
 
 type ASTNode<'a,'b> =
     | ASTNode of 'a * 'b * CodeSpan
-    | ASTError of string*CodeSpan
 
 //<type>  ::= <type1> (<op0> <type1>)*
 //<type1> ::= <type2> (<op1> <type2>)*
