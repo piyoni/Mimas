@@ -15,8 +15,7 @@ type ParseCase<'a> = ParseCase of (Tok -> bool) * Parser<'a>
 let expect (f:Tok->bool) (s: Token list) =
     let fs (Token( tk,_)) = f tk
     fs (s.Head)
-let advance (s:Token list) = Parse(s.Tail,s.Head)
-
+let advance (s:Token list) = Parse(s.Tail,s.Head) 
 let parserInsert f s = Parse(s,f)
 let mkError f (ts:Token list)     = Error(f ts)
 
@@ -90,6 +89,8 @@ let opLeft f (ParseCase(opt,opp)) e =
     pipe2 (fun a rest -> List.fold f a rest ) e (many popp)
 let opRight f (ParseCase(opt,opp)) e =
     let popp = ParseCase(opt, (pipe2 (fun x y ->  (x,y)) opp e))
-    pipe2 (fun a rest -> List.foldBack f a rest ) e (many popp)
-
+    pipe2 (fun a rest -> List.foldBack f rest a ) e (many popp)
+let sepBy (ParseCase(opt,opp)) e =
+    let popp = ParseCase(opt, (pipe2 (fun x y ->  y) opp e))
+    pipe2 (fun a rest ->a::rest) e (many popp)
 let parseBetween f op between cl = pipe3 f op between cl

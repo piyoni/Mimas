@@ -91,6 +91,7 @@ let tokKW : Tok Parser =
         | "+"    -> TkAdd                 // "+"
         | "-"    -> TkSub                 // "-"
         | "*"    -> TkMul                 // "*"
+        | "`"    -> TkConc                // "`"
         | "/"    -> TkDiv                 // "/"
         | "%"    -> TkPercent             // "%"
         | "^"    -> TkPow                 // "^"
@@ -108,7 +109,7 @@ let tokKW : Tok Parser =
         | _      -> TkError t
     (choice [
         regex @"^(>=|=<|<>|>>|\?>|->|:=|--|\.\.|::|mod|rem|def|type|with|xor|or|and)";
-        regex @"^[!@$%^&*()+\-=\[\]{};:\\|,.<>\/?]"
+        regex @"^[!@$%^&*()+\-=\[\]{};:\\|,.<>\/?`]"
         ]) |>> matchTok
 
 let tokComment: unit Parser = pstring "#" >>. skipRestOfLine true
@@ -143,7 +144,6 @@ let tokenizeFile str =
     match runParserOnFile (pipe2 (many tokTok) (tokWithSpan tokEOF) (fun ls e -> ls @ [e]) ) () str System.Text.Encoding.ASCII  with
         | Success(result, _, _)   -> result
         | Failure(errorMsg, _, _) -> []
-
 
 
 
