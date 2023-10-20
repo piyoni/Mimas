@@ -207,12 +207,12 @@ let parseTerm f ea t =
     pipe2 ifcombine ea parseOptArrow
 
 
-let typeOpCons op (ASTNode(e0,(),cs0)) (ASTNode(e1,(),cs1))= 
-    let fhead = tkStr op
-    let exp = ASTType.LitFn(fhead,(Some([(ASTNode(e0,(),cs0));(ASTNode(e0,(),cs1))])))
-    ASTNode(exp,(),codeSpanMerge cs0 cs1)
+//let typeOpCons op (ASTNode(e0,(),cs0)) (ASTNode(e1,(),cs1))= 
+//    let fhead = tkStr op
+//    let exp = ASTType.LitFn(fhead,(Some([(ASTNode(e0,(),cs0));(ASTNode(e0,(),cs1))])))
+//    ASTNode(exp,(),codeSpanMerge cs0 cs1)
 
-let rec parseType = parseOps0 (fun (op,e0) e1 -> typeOpCons op e0 e1) parseType1
-and parseType1 = parseOps1 (fun (op,e0) e1 -> typeOpCons op e0 e1) parseTypeTypeHint
-and parseTypeTypeHint = parseTypeHint (fun th tt -> th) parseBaseType parseBaseType
-and parseBaseType = choicewe []
+//let rec parseType = parseOps0 (fun (op,e0) e1 -> typeOpCons op e0 e1) parseType1
+//and parseType1 = parseOps1 (fun (op,e0) e1 -> typeOpCons op e0 e1) parseTypeTypeHint
+//and parseTypeTypeHint = parseTypeHint (fun th tt -> th) parseBaseType parseBaseType
+//and parseBaseType = choicewe []

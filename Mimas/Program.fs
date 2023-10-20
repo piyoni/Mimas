@@ -12,7 +12,9 @@ let teststr = "\"hello\" 12343 _as As\n234897493978263 28954734.2"
 //printfn "%A" (tokenize teststr)
 
 
+printfn "%s" (parseExpr  "(A and not(B)) or (not(A) and B)")
 
+(*
 let isPlus t =
     match t with
     | TkAdd -> true
@@ -40,3 +42,5 @@ printfn "\n\n"
 printfn "%s parses to \n%A\n\n\n" testst (parseTillEnd parsePexpr testtok)
 let tester = "A+B+C-Ddfsdfs"
 printfn "%s parses to \n%A\n\n\n" tester (parseTillEnd parsePexpr (tokenize tester))
+
+*)

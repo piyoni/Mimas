@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <Compile Include="MetaInf.fs" />
+    <Compile Include="PAST.fs" />
     <Compile Include="Token.fs" />
     <Compile Include="Tokenizing.fs" />
-    <Compile Include="PAST.fs" />
     <Compile Include="ParseCom.fs" />
     <Compile Include="Parsing.fs" />
     <Content Include="programs\testbig.txt">

@@ -17,9 +17,10 @@ type ASTNode<'a,'b> =
 //	|	"[" <typelist> "]"
 type ASTType<'b> =
     | Var           of string
-    | LitFn         of string * (ASTNode<('b ASTType), 'b>  list) Option
-    | Thunk         of ASTNode<'b ASTType, 'b>
-    | Seq           of ASTNode<('b ASTType), 'b> list
+    | LitFn         of string * (ASTNode<('b ASTType), 'b>  list)
+    | LitId         of string
+    | LitSeq           of ASTNode<('b ASTType), 'b> list
+    | Thunk         of ASTNode<'b ASTType,'b>
     | Alt           of ASTNode<'b ASTType, 'b> * ASTNode<'b ASTType, 'b>
     | Join          of ASTNode<'b ASTType, 'b> * ASTNode<'b ASTType, 'b>
     | Pow           of ASTNode<'b ASTType, 'b> * bigint
@@ -34,18 +35,19 @@ type ASTType<'b> =
 //	|	"[" <exprlist> "]"
 //	|	<identifier> ("("<exprlist>")")?
 //	| 	<variable>
-type ASTExpr<'b> =
+and ASTExpr<'b> =
     | Var           of string
     | LitInt        of bigint
     | LitFloat      of double
     | LitString     of string
-    | LitFn         of string * (ASTNode<'b ASTExpr,'b> list) Option
+    | LitFn         of string * (ASTNode<'b ASTExpr,'b> list)
+    | LitId         of string
     | LitSeq        of ASTNode<'b ASTExpr,'b> list
     | Alt           of ASTNode<'b ASTExpr,'b> * ASTNode<'b ASTExpr,'b>
     | Join          of ASTNode<'b ASTExpr,'b> * ASTNode<'b ASTExpr,'b>
     | Thunk         of ASTNode<'b ASTExpr,'b>
     | GiveType      of ASTNode<'b ASTExpr,'b> * ASTNode<'b ASTType,'b>
-   
+ 
 
 //<pattern>  	::= <pattern1> 	(<op0> <pattern1>  )*
 //<pattern7> 	::= <patternpre>(<op7> <patternpre>)*
@@ -57,14 +59,16 @@ type ASTExpr<'b> =
 //	|	"[" <patternlist> "]"
 //	|	<identifier> ("("<patternlist>")")?
 //	| 	<variable>
-type ASTPattern<'b> =
+and ASTPattern<'b> =
     | Var           of string
     | LitInt        of bigint
     | LitFloat      of double
     | LitString     of string
-    | LitFn         of string * (ASTNode<'b ASTPattern, 'b> list) Option
+    | LitFn         of string * (ASTNode<'b ASTPattern, 'b> list)
+    | LitId         of string
     | LitSeq        of ASTNode<'b ASTPattern, 'b> list
     | Thunk         of ASTNode<'b ASTPattern, 'b>
+    | GiveType      of ASTNode<'b ASTPattern,'b> * ASTNode<'b ASTType,'b>
 
 
 //<def> 		::= "def"  		<identifier> ("("<typelist>")")? "->" <type> <localdefs>?

@@ -26,5 +26,5 @@ nth(_,[],D) -> D.
 nth(0,H|_,_)-> H.
 nth(N,_|T,D)-> nth(N-1,T,D).
 
-def addvecint(int^N,int^N) -> int^N.
-addvecint(A,B) -> map2(add,A,B).
+#def addvecint(int^N,int^N) -> int^N.
+#addvecint(A,B) -> map2(add,A,B).
