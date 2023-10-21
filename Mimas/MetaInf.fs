@@ -7,6 +7,8 @@ type CodeSpan =
         startln:int;
         endln:int;
     }
+
+
 let codeSpanMerge csa csb =
     {
         startcol  = min csa.startcol csb.startcol;

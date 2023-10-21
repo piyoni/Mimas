@@ -6,15 +6,14 @@ open MetaInf
 open PAST
 
 let first x _ = x
-
+type 'a Parser = Parser<'a,unit>
 let posTocs (ps:Position) (pe:Position) = {
                 startcol = (int)ps.Column;
                 endcol   = (int)pe.Column;
                 startln  = (int)ps.Line;
                 endln    = (int)pe.Line;
             }
-
-type 'a Parser = Parser<'a,unit>
+let constrASTNode ps node pe = ASTNode(node,(),posTocs ps pe)
 
 let tokComment: unit Parser = pstring "#" >>. skipRestOfLine true
 let sep: unit Parser  = skipMany (choice [spaces1;tokComment])
@@ -95,47 +94,47 @@ let tokVar : Tok Parser =
     let isAsciiIdContinue c =
         isAsciiLetter c || isDigit c || c = '_'
     identifier (IdentifierOptions(isAsciiIdStart    = isAsciiIdStart, isAsciiIdContinue = isAsciiIdContinue))|>> Tok.TkVar
-
-let tokfn       = tokWithSpan (pstring "->"     |>> first TkFn)
-let tokrel      = tokWithSpan (pstring "--"     |>> first TkRel)
-let toksequ     = tokWithSpan (pstring ">>"     |>> first TkSequ)
-let tokseque    = tokWithSpan (pstring "?>"     |>> first TkSeQue)
-let tokne       = tokWithSpan (pstring "<>"     |>> first TkNe)
-let tokgteq     = tokWithSpan (pstring ">="     |>> first TkGtEq)
-let toksteq     = tokWithSpan (pstring "=<"     |>> first TkStEq)
-let tokdd       = tokWithSpan (pstring ".."     |>> first TkDotDot)
-let tokasign    = tokWithSpan (pstring ":="     |>> first TkAssign)
-let tokth       = tokWithSpan (pstring "::"     |>> first TkTypeHint)
-let toklbr      = tokWithSpan (pstring "("      |>> first TkLBr)
-let tokrbr      = tokWithSpan (pstring ")"      |>> first TkRBr)
-let toklsq      = tokWithSpan (pstring "["      |>> first TkLSq)
-let tokrsq      = tokWithSpan (pstring "]"      |>> first TkRSq)
-let toklcu      = tokWithSpan (pstring "{"      |>> first TkLCu)
-let tokrcu      = tokWithSpan (pstring "}"      |>> first TkRCu)
-let toksemi     = tokWithSpan (pstring ";"      |>> first TkSemi)
-let tokque      = tokWithSpan (pstring "?"      |>> first TkQue)
-let tokpipe     = tokWithSpan (pstring "|"      |>> first TkPipe)
-let tokst       = tokWithSpan (pstring "<"      |>> first TkSt)
-let tokeq       = tokWithSpan (pstring "="      |>> first TkEq)
-let tokgt       = tokWithSpan (pstring ">"      |>> first TkGt)
-let tokadd      = tokWithSpan (pstring "+"      |>> first TkAdd)
-let toksub      = tokWithSpan (pstring "-"      |>> first TkSub)
-let tokmul      = tokWithSpan (pstring "*"      |>> first TkMul)
-let tokconc     = tokWithSpan (pstring "`"      |>> first TkConc)
-let tokdiv      = tokWithSpan (pstring "/"      |>> first TkDiv)
-let tokpercent  = tokWithSpan (pstring "%"      |>> first TkPercent)
-let tokpow      = tokWithSpan (pstring "^"      |>> first TkPow)
-let toknot      = tokWithSpan (pstring "~"      |>> first TkNot)
-let tokcom      = tokWithSpan (pstring ","      |>> first TkCom)
-let tokdot      = tokWithSpan (pstring "."      |>> first TkDot)
-let tokmod      = tokWithSpan (pstring "mod"    |>> first TkMod)
-let tokrem      = tokWithSpan (pstring "rem"    |>> first TkRem)
-let tokdef      = tokWithSpan (pstring "def"    |>> first TkDef)
-let toktype     = tokWithSpan (pstring "type"   |>> first TkType)
-let tokwith     = tokWithSpan (pstring "with"   |>> first TkWith)
-let tokor       = tokWithSpan (pstring "or"     |>> first TkOr)
-let tokxor      = tokWithSpan (pstring "xor"    |>> first TkXor)
-let tokand      = tokWithSpan (pstring "and"    |>> first TkAnd)
+let nfbc: unit Parser = notFollowedBy (anyOf "-><?.:=")
+let tokfn       = tokWithSpan ((pstring "->"     |>> first TkFn)        .>> nfbc)
+let tokrel      = tokWithSpan ((pstring "--"     |>> first TkRel)        .>> nfbc)
+let toksequ     = tokWithSpan ((pstring ">>"     |>> first TkSequ)        .>> nfbc)
+let tokseque    = tokWithSpan ((pstring "?>"     |>> first TkSeQue)        .>> nfbc)
+let tokne       = tokWithSpan ((pstring "<>"     |>> first TkNe)        .>> nfbc)
+let tokgteq     = tokWithSpan ((pstring ">="     |>> first TkGtEq)        .>> nfbc)
+let toksteq     = tokWithSpan ((pstring "=<"     |>> first TkStEq)        .>> nfbc)
+let tokdd       = tokWithSpan ((pstring ".."     |>> first TkDotDot)        .>> nfbc)
+let tokasign    = tokWithSpan ((pstring ":="     |>> first TkAssign)        .>> nfbc)
+let tokth       = tokWithSpan ((pstring "::"     |>> first TkTypeHint)        .>> nfbc)
+let toklbr      = tokWithSpan  (pstring "("      |>> first TkLBr)
+let tokrbr      = tokWithSpan  (pstring ")"      |>> first TkRBr)
+let toklsq      = tokWithSpan  (pstring "["      |>> first TkLSq)
+let tokrsq      = tokWithSpan  (pstring "]"      |>> first TkRSq)
+let toklcu      = tokWithSpan  (pstring "{"      |>> first TkLCu)
+let tokrcu      = tokWithSpan  (pstring "}"      |>> first TkRCu)
+let toksemi     = tokWithSpan ((pstring ";"      |>> first TkSemi)        .>> nfbc)
+let tokque      = tokWithSpan ((pstring "?"      |>> first TkQue)        .>> nfbc)
+let tokpipe     = tokWithSpan ((pstring "|"      |>> first TkPipe)        .>> nfbc)
+let tokst       = tokWithSpan ((pstring "<"      |>> first TkSt)        .>> nfbc)
+let tokeq       = tokWithSpan ((pstring "="      |>> first TkEq)        .>> nfbc)
+let tokgt       = tokWithSpan ((pstring ">"      |>> first TkGt)        .>> nfbc)
+let tokadd      = tokWithSpan ((pstring "+"      |>> first TkAdd)        .>> nfbc)
+let toksub      = tokWithSpan ((pstring "-"      |>> first TkSub)        .>> nfbc)
+let tokmul      = tokWithSpan ((pstring "*"      |>> first TkMul)        .>> nfbc)
+let tokconc     = tokWithSpan ((pstring "`"      |>> first TkConc)        .>> nfbc)
+let tokdiv      = tokWithSpan ((pstring "/"      |>> first TkDiv)        .>> nfbc)
+let tokpercent  = tokWithSpan ((pstring "%"      |>> first TkPercent)        .>> nfbc)
+let tokpow      = tokWithSpan ((pstring "^"      |>> first TkPow)        .>> nfbc)
+let toknot      = tokWithSpan ((pstring "~"      |>> first TkNot)        .>> nfbc)
+let tokcom      = tokWithSpan ((pstring ","      |>> first TkCom)        .>> nfbc)
+let tokdot      = tokWithSpan ((pstring "."      |>> first TkDot)        .>> nfbc)
+let tokmod      = tokWithSpan ((pstring "mod"    |>> first TkMod)        .>> nfbc)
+let tokrem      = tokWithSpan ((pstring "rem"    |>> first TkRem)        .>> nfbc)
+let tokdef      = tokWithSpan ((pstring "def"    |>> first TkDef)        .>> nfbc)
+let toktype     = tokWithSpan ((pstring "type"   |>> first TkType)        .>> nfbc)
+let tokwith     = tokWithSpan ((pstring "with"   |>> first TkWith)        .>> nfbc)
+let tokor       = tokWithSpan ((pstring "or"     |>> first TkOr)        .>> nfbc)
+let tokxor      = tokWithSpan ((pstring "xor"    |>> first TkXor)        .>> nfbc)
+let tokand      = tokWithSpan ((pstring "and"    |>> first TkAnd)        .>> nfbc)
 
 
 let mappingInfix  f str _ (ASTNode(l,(),csl)) (ASTNode(r,(),csr)) =
@@ -215,6 +214,19 @@ let parseVar f =
         match t with
         | TkVar s -> ASTNode(f s,(),cs)
         | _ -> raise (invalidArg "i" "")
+let parseNumber i f =
+    tokWithSpan tokNumber |>> fun (Token(t,cs)) ->
+        match t with
+        | TkInt   s -> ASTNode(i s,(),cs)
+        | TkFloat s -> ASTNode(f s,(),cs)
+        | _ -> raise (invalidArg "i" "")
+
+let parseString f =
+    tokWithSpan tokNumber |>> fun (Token(t,cs)) ->
+        match t with
+        | TkString   s -> ASTNode(f s,(),cs)
+        | _ -> raise (invalidArg "i" "")
+
 // type parsing
 let typeInfixop str arg0 arg1 = ASTType.LitFn(str,[arg0; arg1])
 let typePrefixop str arg = ASTType.LitFn(str,[arg])
@@ -294,13 +306,55 @@ let parseBaseExpr p =
         parseBr    p;
         parseThunk p ASTExpr.Thunk
         parseVar ASTExpr.Var
-        //parsetypehint p typeOpsParser ASTExpr.GiveType
+        parseNumber ASTExpr.LitInt ASTExpr.LitFloat
+        parseString ASTExpr.LitString
     ]
     parsetypehint terms typeOpsParser ASTExpr.GiveType
 exprOpsParser.TermParser <- parseBaseExpr exprOpsParser
 
 
+//type ASTStatemenType<'b> = 
+//    | LitDef        of string * (ASTNode<'b ASTType,'b> list   ) Option* ASTNode<'b ASTType,'b>
+//    | LitTypeDef    of string * (ASTNode<'b ASTType,'b> list   ) Option
+//    | LitRule       of string * (ASTNode<'b ASTPattern,'b> list) Option* ASTNode<'b ASTExpr,'b>
+//    | LitRuleType   of string * (ASTNode<'b ASTType,'b> list   ) Option* ASTNode<'b ASTType,'b>
+let parseLitDef =
+    let consASTLitDef ident args _ ret =
+        match ident with
+        | TkIdent s -> ASTStatemenType.LitDef(s,args,ret)
+        | _ -> raise (invalidArg "i" "")
+    let parseInternal = (tokdef >>. pipe4 tokIdent (parseArgList typeOpsParser) tokfn typeOpsParser consASTLitDef)
+    pipe3 getPosition parseInternal getPosition constrASTNode
 
+let parseLitTypeDef =
+    let consASTLitTypeDef ident args =
+        match ident with
+        | TkIdent s -> ASTStatemenType.LitTypeDef(s,args)
+        | _ -> raise (invalidArg "i" "")
+    let parseInternal = (toktype >>. pipe2 tokIdent (parseArgList typeOpsParser) consASTLitTypeDef)
+    pipe3 getPosition parseInternal getPosition constrASTNode
+
+let parseLitRule =
+    let consASTLitRule head _ ret = ASTStatemenType.LitRule(head,ret)
+    let parseInternal = pipe3 (parseIdentOrFn exprOpsParser ASTExpr.LitId ASTExpr.LitFn) tokfn exprOpsParser consASTLitRule
+    (pipe3 getPosition parseInternal getPosition constrASTNode)
+
+let parseLitTypeRule =
+    let consASTLitTypeRule head _ ret = ASTStatemenType.LitRuleType(head,ret)
+    let parseInternal = pipe3 typeOpsParser tokrel typeOpsParser consASTLitTypeRule
+    (pipe3 getPosition parseInternal getPosition constrASTNode)
+
+
+let parseStatementType = choice [parseLitDef; parseLitTypeDef;attempt parseLitTypeRule; parseLitRule]
+
+let parseStatement, parseStatementRef = createParserForwardedToRef()
+
+let rec parseStatementAST =
+    let pst (ASTNode(st,(),cs)) x =
+        match x with
+        | None    -> ASTNode(ASTStatement(st,[]),(),cs)
+        | Some(s) -> ASTNode(ASTStatement(st,s),(),cs)
+    (pipe2 parseStatementType (opt (tokwith >>. toklsq >>. (many parseStatement) .>> tokrsq)) pst) .>> tokdot
 
 
 let parseType str = 
@@ -309,5 +363,15 @@ let parseType str =
     | Failure(errorMsg, _, _) -> errorMsg
 let parseExpr str = 
     match run exprOpsParser str with
+    | Success(result, _, _)   -> sprintf "%A" result
+    | Failure(errorMsg, _, _) -> errorMsg
+
+let parseStatements str = 
+    match run ((many parseStatementAST) .>> eof) str with
+    | Success(result, _, _)   -> sprintf "%A" result
+    | Failure(errorMsg, _, _) -> errorMsg
+
+let parseFile str = 
+    match runParserOnFile ((many parseStatementAST) .>> eof) () str System.Text.Encoding.ASCII with
     | Success(result, _, _)   -> sprintf "%A" result
     | Failure(errorMsg, _, _) -> errorMsg

@@ -80,10 +80,10 @@ and ASTPattern<'b> =
 //<statement> ::= (<def>|<rule>|<type>|<typerule>) "."
 
 type ASTStatemenType<'b> = 
-    | LitDef        of string * (ASTNode<'b ASTType,'b> list   ) * ASTNode<'b ASTType,'b>
-    | LitTypeDef    of string * (ASTNode<'b ASTType,'b> list   ) * ASTNode<'b ASTType,'b>
-    | LitRule       of string * (ASTNode<'b ASTPattern,'b> list) * ASTNode<'b ASTExpr,'b>
-    | LitRuleType   of string * (ASTNode<'b ASTType,'b> list   ) * ASTNode<'b ASTType,'b>
+    | LitDef        of string * (ASTNode<'b ASTType,'b> list   ) Option * ASTNode<'b ASTType,'b>
+    | LitTypeDef    of string * (ASTNode<'b ASTType,'b> list   ) Option
+    | LitRule       of ASTNode<'b ASTExpr,'b> * ASTNode<'b ASTExpr,'b>
+    | LitRuleType   of ASTNode<'b ASTType,'b> * ASTNode<'b ASTType,'b>
 type ASTStatement<'b> = ASTStatement of 'b ASTStatemenType * (ASTNode<'b ASTStatement, 'b> list)
 
 // need combinators for cases

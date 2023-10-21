@@ -8,7 +8,7 @@ open Tokenizing
 
 let teststr = "\"hello\" 12343 _as As\n234897493978263 28954734.2"
 
-//printfn "%A\n" (tokenizeFile "programs/test.txt")
+printfn "%A\n" (parseFile "programs/test.txt")
 //printfn "%A" (tokenize teststr)
 
 
