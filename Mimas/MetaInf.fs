@@ -1,5 +1,7 @@
 ﻿module MetaInf
 
+let intMaxValue =  2147483647
+let intMinValue = -2147483648
 type CodeSpan =
     {
         startcol:int;
@@ -7,7 +9,13 @@ type CodeSpan =
         startln:int;
         endln:int;
     }
-
+let codeSpanNull =
+    {
+        startcol = intMaxValue;
+        endcol   = intMinValue;
+        startln  = intMaxValue;
+        endln    = intMinValue;
+    }
 
 let codeSpanMerge csa csb =
     {
