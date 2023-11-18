@@ -17,6 +17,7 @@ let codeSpanNull =
         endln    = intMinValue;
     }
 
+
 let codeSpanMerge csa csb =
     {
         startcol  = min csa.startcol csb.startcol;
@@ -24,3 +25,4 @@ let codeSpanMerge csa csb =
         startln   = min csa.startln  csb.startln;
         endln     = max csa.endln    csb.endln;
     }
+

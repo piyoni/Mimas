@@ -7,10 +7,7 @@
 
   <ItemGroup>
     <Compile Include="MetaInf.fs" />
-    <Compile Include="Parsing\CST.fs" />
-    <Compile Include="Parsing\Token.fs" />
-    <Compile Include="Parsing\Parsing.fs" />
-    <Compile Include="Parsing\PAST.fs" />
+    <Compile Include="Parsing\Parser.fs" />
     <Content Include="programs\testbig.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

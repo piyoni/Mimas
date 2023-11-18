@@ -26,5 +26,15 @@ nth(_,[],D) -> D.
 nth(0,H|_,_)-> H.
 nth(N,_|T,D)-> nth(N-1,T,D).
 
-#def addvecint(int^N,int^N) -> int^N.
-#addvecint(A,B) -> map2(add,A,B).
+def addvecint(int^N,int^N) -> int^N.
+addvecint(A,B) -> map2(add,A,B).
+
+def distance2([float,float],[float,float]) -> float.
+distance2([X0,Y0],[X1,Y1]) ->
+	Dx := X0 - X1;
+	Dy := Y0 - Y1;
+	(Dx*Dx+Dy*Dy)^0.5
+	.
+
+def sinc(float) -> float.
+sinc(X) -> sin(X)/X ? 1 .
