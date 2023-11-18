@@ -38,3 +38,5 @@ distance2([X0,Y0],[X1,Y1]) ->
 
 def sinc(float) -> float.
 sinc(X) -> sin(X)/X ? 1 .
+
+

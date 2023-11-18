@@ -32,6 +32,13 @@
     and  ASTStatement   = ASTtatement of ASTStatementType * DefScope
 
     module ParserFunctions =
+        let resultSatisfies predicate msg (p: Parser<_,_>) : Parser<_,_> =
+            let error = messageError msg
+            fun stream ->
+                let reply = p stream
+                if reply.Status <> Ok || predicate reply.Result then reply
+                else
+                    Reply(Error, error)
         let parseComment: unit Parser = pstring "#" >>. skipRestOfLine true
         let sep = skipMany (choice [spaces1;parseComment]) .>> optional eof
         // make codeSpan and add Into AST
@@ -47,7 +54,7 @@
         let parseStr = ((pchar '"') >>. (many1CharsTill (anyChar) (pchar '"'))) |>> ValType.String : ValType Parser
         let parseNumber : ValType Parser =
             let numberFormat =     NumberLiteralOptions.AllowFraction ||| NumberLiteralOptions.AllowExponent
-            numberLiteral numberFormat "number" |>> (fun num ->
+            resultSatisfies (fun (num : NumberLiteral) -> num.String.[String.length num.String - 1]<>'.') "number literal cannot end with '.'" (numberLiteral numberFormat "number") |>> (fun num ->
                 if num.IsInteger then ValType.Integer  num.String
                 else ValType.Floating num.String)
         //
