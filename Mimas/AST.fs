@@ -4,6 +4,7 @@
         col:int;
         ln:int;
     }
+    type CodeSpan = CodeSpan of CodePos * CodePos
 
     type ValType =
         | Integer   of string
@@ -11,19 +12,21 @@
         | String    of string
         | Var       of string
         | Ident     of string
+        | Operat    of string
     
 
     type Expr =
-        | Const of CodePos * CodePos * ValType
-        | App   of CodePos * CodePos * ValType * Expr List
-        | Lst   of CodePos * CodePos * Expr List
-        | Seq   of CodePos * CodePos * Expr * Expr
-        | Alt   of CodePos * CodePos * Expr * Expr
-        | Decls of CodePos * CodePos * Decl List
+        | Const of CodeSpan * ValType
+        | App   of CodeSpan * ValType * Expr List
+        | Cal   of CodeSpan * Expr * Expr List
+        | Lst   of CodeSpan * Expr List
+        | Seq   of CodeSpan * Expr * Expr
+        | Alt   of CodeSpan * Expr * Expr
+        | Fn    of CodeSpan * Expr * Expr
+        | FnIf  of CodeSpan * Expr * Expr
+        | Com   of CodeSpan * Expr * Expr
+        | Decls of CodeSpan * Decl List
     and Decl =
-        | Def of CodePos * CodePos * string * TypeHint * Expr
-        | Var of CodePos * CodePos * string * TypeHint * Expr
-    and TypeHint =
-        | NoHint
-        | Hint of Expr
+        | Def of CodeSpan * ValType * Option<Expr> * Expr
+        | Var of CodeSpan * Expr   * Option<Expr> * Expr
 

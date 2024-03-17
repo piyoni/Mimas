@@ -7,6 +7,10 @@
 
   <ItemGroup>
     <Compile Include="AST.fs" />
+    <Compile Include="Parser.fs" />
+    <Content Include="programs\small.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="programs\test.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,0 +1,14 @@
+def fib =
+		|> 0 -> 1
+        |> 1 -> 1
+        |> N -> fib(N-1)+fib(N-2)
+end
+
+def distance2 = 
+	([X0,Y0],[X1,Y1]) ->
+		var Dx = X0-X1;
+		var Dy = Y0-Y1;
+		sqrt(Dx*Dx+Dy*Dy)
+end
+
+end end

@@ -2,45 +2,50 @@ def fib =
 		|> 0 -> 1
         |> 1 -> 1
         |> N -> fib(N-1)+fib(N-2)
-
+end
 def distance2 = 
 	([X0,Y0],[X1,Y1]) ->
 		var Dx = X0-X1;
 		var Dy = Y0-Y1;
 		sqrt(Dx*Dx+Dy*Dy)
+end
 
 def gcd = 
 	|> (A,0) -> A 
 	|> (A,B) ->
-		var NA = max(A,B);
-		var NB = min(A,B);
+		var NA = max(A,B) end 
+		var NB = min(A,B) end;
 		gcd(NA-NB,NB)
+end
 
 def trialDivision =
 	|> (A, B) if  sqrt(B) >= A -> false
-	|> (A, B) if  A rem B = 0 -> true
+	|> (A, B) if  A rem B == 0 -> true
 	|> (A, B) -> trialdivision(A,B+1)
 
 def isPrime = N -> not(trialDivision(N,2))
+end
 
 def append : (list(A),list(A))-> list(A) =
 	|> ([   ], L) -> L
 	|> (X|T, L) -> X|append(T,L)
-
+end
 
 def reverse : list(A) -> list(A) = # not efficient at all
 	|> [   ] -> []
 	|> X|T -> append(reverse(T),[X])
+end
 
-
-def div0 =  (A,B) -> A/B |> 0
+def div0 =  (A,B) -> (A/B |> 0)
+end
 
 
 def map : ((A->B),list(A))->list(B) =
 	|> (_,[   ]) -> []
 	|> (F,H|T) -> F(H)|map(F,T)
-
+end
 def zip : (list(A),list(B)) -> list((A,B)) =
 	|> ([],_) -> []
 	|> (_,[]) -> []
 	|> (H0|T0,H1|T1) -> (H0,H1)|zip(T0,T1)
+end
