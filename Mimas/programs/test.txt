@@ -5,8 +5,8 @@ def fib =
 end
 def distance2 = 
 	([X0,Y0],[X1,Y1]) ->
-		var Dx = X0-X1;
-		var Dy = Y0-Y1;
+		var Dx = X0-X1 end;
+		var Dy = Y0-Y1 end;
 		sqrt(Dx*Dx+Dy*Dy)
 end
 
@@ -17,12 +17,12 @@ def gcd =
 		var NB = min(A,B) end;
 		gcd(NA-NB,NB)
 end
-
+ 
 def trialDivision =
 	|> (A, B) if  sqrt(B) >= A -> false
 	|> (A, B) if  A rem B == 0 -> true
 	|> (A, B) -> trialdivision(A,B+1)
-
+end
 def isPrime = N -> not(trialDivision(N,2))
 end
 

@@ -6,6 +6,7 @@
     let parseComment: unit Parser = pstring "#" >>. skipRestOfLine true
     //
     let sep = skipMany (choice [spaces1;parseComment]) .>> optional eof
+
     //
     let toCodeSpan (startpos:Position) (endpos:Position) = CodeSpan(
         {col=(int)startpos.Column;ln=(int)startpos.Line},
@@ -74,13 +75,13 @@
     let exprOpsParser = OperatorPrecedenceParser()
     // infix operators
     let altFn pos l r = Expr.Alt(toCodeSpan pos pos, l, r)
-    let comFn pos l r = Expr.Com(toCodeSpan pos pos, l, r)
+    let comFn pos l r = Expr.Commma(toCodeSpan pos pos, l, r)
 
     let seqFn pos l r = Expr.Seq(toCodeSpan pos pos, l, r)
     let ifFn  pos l r = Expr.FnIf(toCodeSpan pos pos, l, r)
-    let fnFn  pos l r = Expr.Fn(toCodeSpan pos pos, l, r)
+    let fnFn  pos l r = Expr.Arrow(toCodeSpan pos pos, l, r)
 
-    let op2Fn op pos l r = Expr.App(toCodeSpan pos pos, op ,[l; r])
+    let op2Fn op pos l r = Expr.Oper(toCodeSpan pos pos, op ,[l; r])
     addInfixOperator exprOpsParser "," 10 Associativity.Right comFn
 
     addInfixOperator exprOpsParser "|>" 20 Associativity.Right altFn
@@ -109,7 +110,7 @@
     stdinfix "/"   64 Associativity.Left
     stdinfix "rem" 64 Associativity.Left
     // prefix operators
-    let op1Fn op pos r = Expr.App(toCodeSpan pos pos, op ,[r])
+    let op1Fn op pos r = Expr.Oper(toCodeSpan pos pos, op ,[r])
     let stdprefix str prec = addPrefixOperator exprOpsParser str prec (op1Fn (Operat str))
     stdprefix "+" 64 
     stdprefix "-" 64
@@ -117,10 +118,10 @@
     addPrefixOperator exprOpsParser "|>" 20 (fun p x -> x)
     // parsing declarations
     let parseTH = (opt (kwCol >>.exprOpsParser))
-    let parseDeclDef = pipe5 getPosition (kwDef>>.parseIdent.>>sep) (parseTH.>>kwIs) (exprOpsParser.>>kwEnd) getPosition (
+    let parseDeclDef = pipe5 getPosition (kwDef>>.parseIdent.>>sep) (parseTH.>>kwIs) (exprOpsParser.>>(kwEnd<?>"missing \"end\"")) getPosition (
         fun pstart idnt typehint body pend -> Decl.Def(toCodeSpan pstart pend, idnt, typehint, body)
         )
-    let parseDeclVar = pipe5 getPosition (kwVar>>.sep>>.exprOpsParser) (parseTH.>>kwIs) (exprOpsParser.>>kwEnd) getPosition (
+    let parseDeclVar = pipe5 getPosition (kwVar>>.sep>>.exprOpsParser) (parseTH.>>kwIs) (exprOpsParser.>>kwEnd<?>"missing\"end\"") getPosition (
         fun pstart idnt typehint body pend -> Decl.Var(toCodeSpan pstart pend, idnt, typehint, body)
         )
     let parseDecls = pipe3 getPosition (many1 (choice [parseDeclDef;parseDeclVar])) getPosition (
@@ -129,11 +130,14 @@
     // parsing list
     let rec unfoldCommas node =
         match node with
-        | (Expr.Com(_,l,r)) -> l::(unfoldCommas r)
+        | (Expr.Commma(_,l,r)) -> l::(unfoldCommas r)
         | _                 -> [node]
-    let parseList = pipe3 (getPosition.>>kwLSq) exprOpsParser (kwRSq>>.getPosition) (
-        fun pstart ex pend -> Expr.Lst(toCodeSpan pstart pend,unfoldCommas ex)
-        )
+    let parseList = pipe3 (getPosition.>>kwLSq) (opt exprOpsParser) (kwRSq>>.getPosition) (
+        fun pstart ex pend -> Expr.Lst(toCodeSpan pstart pend,
+        match ex with
+            | None     -> []
+            | Some(xe) -> unfoldCommas xe
+        ))
     // (expression)
     let parseExprValue = pipe3 getPosition parseValue getPosition (
         fun pstart ex pend -> Expr.Const(toCodeSpan pstart pend,ex)
@@ -143,7 +147,7 @@
         )
     let parseBaseExpr = sep>>.(choice [parseDecls;parseBrs;parseList;parseExprValue]).>> sep
     let parseApply = pipe4 getPosition parseBaseExpr (many parseBrs) getPosition (
-        fun pstart head appls pend -> List.fold (fun ex a-> Expr.Cal(toCodeSpan pstart pend,ex,unfoldCommas a)) head appls
+        fun pstart head appls pend -> List.fold (fun ex a-> Expr.App(toCodeSpan pstart pend,ex,unfoldCommas a)) head appls
         )
     exprOpsParser.TermParser <- parseApply
     let parseFile str = 

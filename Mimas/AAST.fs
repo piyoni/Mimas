@@ -1,11 +1,5 @@
-﻿module AST
-    open System.Numerics
-    type CodePos = {
-        col:int;
-        ln:int;
-    }
-    type CodeSpan = CodeSpan of CodePos * CodePos
-
+﻿module AAST
+    open AST
     type ValType =
         | Integer   of string
         | Floating  of string

@@ -14,6 +14,9 @@
     <Content Include="programs\test.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Compile Include="AAST.fs" />
+    <Compile Include="TypeTree.fs" />
+    <Compile Include="ASTtoPY.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
